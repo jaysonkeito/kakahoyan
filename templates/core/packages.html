@@ -1,12 +1,25 @@
 {% extends 'base.html' %}
 {% block title %}Event Packages — Kakahoyan{% endblock %}
 {% block content %}
-<div style="background:var(--charcoal);padding:4rem 0;border-bottom:1px solid var(--gold-dark)">
+<style>
+.hero-text {
+  color: rgba(255,255,255,0.65);
+  max-width: 560px;
+}
+
+@media (min-width: 992px) {
+  .hero-text {
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+</style>
+<div style="background:var(--charcoal);padding:2rem 0; border-bottom:1px solid var(--gold-dark)">
   <div class="container">
     <p class="section-label">Services</p>
     <h1 style="font-family:'Cormorant Garamond',serif;font-size:3rem;color:#fff">Events We Cater</h1>
     <div class="divider-gold"></div>
-    <p style="color:rgba(255,255,255,0.65);max-width:560px">From intimate gatherings to grand celebrations — Kakahoyan has a space for every occasion.</p>
+    <p class="hero-text">From intimate gatherings to grand celebrations — Kakahoyan has a space for every occasion.</p>
   </div>
 </div>
 <section style="padding:5rem 0;background:var(--cream)">
