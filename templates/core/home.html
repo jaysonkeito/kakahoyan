@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% block title %}Kakahoyan Event Place — Sta. Catalina, Negros Oriental{% endblock %}
+
+{% block extra_css %}
+.hero {
+  min-height: 92vh;
+  background: var(--charcoal);
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(26,26,26,0.92) 40%, rgba(201,168,76,0.12) 100%),
+    url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1600&q=80') center/cover no-repeat;
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 600;
+  color: #fff;
+  line-height: 0.95;
+  margin-bottom: 1.5rem;
+  animation: fadeUp 0.9s 0.1s ease both;
+}
+.hero-title span { color: var(--gold); font-style: italic; }
+.hero-sub {
+  color: rgba(255,255,255,0.7);
+  max-width: 480px;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  animation: fadeUp 1s 0.2s ease both;
+}
+.hero-actions { animation: fadeUp 1.1s 0.3s ease both; }
+.btn-primary-gold {
+  background: var(--gold);
+  color: var(--charcoal);
+  border: none;
+  padding: 0.85rem 2rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  border-radius: 0;
+}
+.btn-primary-gold:hover { background: var(--gold-light); color: var(--charcoal); transform: translateY(-2px); }
+.btn-outline-white {
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #fff;
+  background: transparent;
+  padding: 0.85rem 2rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s;
+  border-radius: 0;
+}
+.btn-outline-white:hover { border-color: var(--gold); color: var(--gold); }
+
+/* STATS BAR */
+.stats-bar {
+  background: var(--cream);
+  border-top: 1px solid var(--gold-dark);
+  border-bottom: 1px solid var(--gold-dark);
+  padding: 1.5rem 0;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--charcoal); margin-top: 0.25rem; }
+
+/* EVENTS SECTION */
+.events-section { padding: 5rem 0; background: var(--cream); }
+.event-card {
+  background: #fff;
+  border: 1px solid var(--cream-mid);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: all 0.25s;
+  cursor: default;
+}
+.event-card:hover { border-color: var(--gold); transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.event-icon { font-size: 2rem; color: var(--gold); margin-bottom: 1rem; }
+.event-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; margin-bottom: 0.5rem; }
+.event-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+/* GALLERY PREVIEW */
+.gallery-section { padding: 5rem 0; background: var(--cream-mid); }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.gallery-grid .tall { grid-row: span 2; }
+.gallery-thumb {
+  aspect-ratio: 1;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transition: opacity 0.2s;
+}
+.gallery-thumb:hover { opacity: 0.85; }
+.tall .gallery-thumb { aspect-ratio: unset; height: 100%; }
+
+/* APPOINTMENT CTA */
+.appt-section {
+  background: var(--charcoal);
+  padding: 5rem 0;
+  position: relative;
+  overflow: hidden;
+}
+.appt-section::before {
+  content: '';
+  position: absolute;
+  right: -80px; top: -80px;
+  width: 360px; height: 360px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.appt-section::after {
+  content: '';
+  position: absolute;
+  right: 40px; top: 40px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.1);
+}
+
+/* MAP */
+.map-section { padding: 5rem 0; background: var(--cream); }
+.map-wrapper { border: 2px solid var(--gold-dark); }
+.map-wrapper iframe { display: block; }
+
+/* POSTS */
+.posts-section { padding: 5rem 0; background: var(--cream-mid); }
+.post-card { background: #fff; border: 1px solid var(--cream-mid); padding: 1.5rem; }
+.post-card img { width: 100%; height: 200px; object-fit: cover; margin-bottom: 1rem; }
+.post-card h5 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; }
+.post-date { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container hero-content">
+    <div class="col-lg-8">
+      <p class="hero-eyebrow"><i class="bi bi-diamond me-2"></i>Sta. Catalina, Negros Oriental</p>
+      <h1 class="hero-title">Where Every<br>Event Becomes<br><span>Unforgettable</span></h1>
+      <p class="hero-sub">Kakahoyan offers an exclusive venue for weddings, celebrations, and gatherings — featuring a fully air-conditioned Glass Pavilion for up to 250 guests and a stunning outdoor platform.</p>
+      <div class="hero-actions d-flex gap-3 flex-wrap">
+        <a href="/appointments/" class="btn-primary-gold">Book a Consultation</a>
+        <a href="/gallery/" class="btn-outline-white">View Gallery</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number">250</div>
+        <div class="stat-label">Guest Capacity</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number">2</div>
+        <div class="stat-label">Event Spaces</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number">6+</div>
+        <div class="stat-label">Event Types</div>
+      </div>
+      <div class="col-6 col-md-3 stat-item">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Open for Inquiry</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section class="events-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">Our Services</p>
+      <h2 class="section-title">Events We Cater</h2>
+      <div class="divider-gold mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      {% for icon, name, desc in event_types %}
+      <div class="col-6 col-md-4 col-lg-2">
+        <div class="event-card h-100">
+          <div class="event-icon"><i class="bi bi-{{ icon }}"></i></div>
+          <h4>{{ name }}</h4>
+          <p>{{ desc }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY PREVIEW -->
+{% if featured_media %}
+<section class="gallery-section">
+  <div class="container">
+    <div class="row align-items-end mb-4">
+      <div class="col">
+        <p class="section-label">Our Facilities</p>
+        <h2 class="section-title">The Venue</h2>
+        <div class="divider-gold"></div>
+      </div>
+      <div class="col-auto">
+        <a href="/gallery/" class="btn-primary-gold">View All Photos</a>
+      </div>
+    </div>
+    <div class="gallery-grid">
+      {% for item in featured_media %}
+      <div {% if forloop.first %}class="tall"{% endif %}>
+        <img src="{{ item.file.url }}" alt="{{ item.title }}" class="gallery-thumb">
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- APPOINTMENT CTA -->
+<section class="appt-section">
+  <div class="container" style="position:relative;z-index:2">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <p class="section-label">Get in Touch</p>
+        <h2 class="section-title" style="color:#fff">Ready to Plan<br>Your <span style="color:var(--gold);font-style:italic">Special Event?</span></h2>
+        <div class="divider-gold"></div>
+        <p style="color:rgba(255,255,255,0.7);max-width:480px;line-height:1.7">Book a consultation with our team. We can meet at Kakahoyan, at your preferred location between Sta. Catalina and Bayawan City, or discuss over the phone — whatever works best for you.</p>
+      </div>
+      <div class="col-lg-5">
+        <div style="border:1px solid rgba(201,168,76,0.3);padding:2.5rem;">
+          <p style="color:var(--gold);font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1.5rem">Contact Information</p>
+          <p style="color:#fff"><i class="bi bi-telephone me-3" style="color:var(--gold)"></i>0920 611 2718</p>
+          <p style="color:rgba(255,255,255,0.7);font-size:0.85rem"><i class="bi bi-geo-alt me-3" style="color:var(--gold)"></i>Purok 2, Brgy. Caranoche,<br>Sta. Catalina, Negros Oriental</p>
+          <hr style="border-color:rgba(255,255,255,0.15);margin:1.5rem 0">
+          <a href="/appointments/" class="btn-primary-gold w-100 text-center d-block" style="padding:1rem">Set an Appointment</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="map-section">
+  <div class="container">
+    <div class="text-center mb-4">
+      <p class="section-label">Find Us</p>
+      <h2 class="section-title">Our Location</h2>
+      <div class="divider-gold mx-auto"></div>
+      <p class="text-muted">Purok 2, Brgy. Caranoche, Sta. Catalina, Negros Oriental, 6220</p>
+    </div>
+    <div class="map-wrapper">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3927.08!2d122.983!3d9.4198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOcKwMjUnMTEuMyJOIDEyMsKwNTknMDAuMyJF!5e0!3m2!1sen!2sph!4v1234567890"
+        width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- RECENT POSTS -->
+{% if recent_posts %}
+<section class="posts-section">
+  <div class="container">
+    <div class="row align-items-end mb-4">
+      <div class="col">
+        <p class="section-label">Latest</p>
+        <h2 class="section-title">Updates & Events</h2>
+        <div class="divider-gold"></div>
+      </div>
+      <div class="col-auto">
+        <a href="/posts/" class="btn-primary-gold">See All Updates</a>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for post in recent_posts %}
+      <div class="col-md-4">
+        <div class="post-card">
+          {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}">{% endif %}
+          <p class="post-date">{{ post.created_at|date:"F d, Y" }}</p>
+          <h5>{{ post.title }}</h5>
+          <p style="font-size:0.85rem;color:var(--text-muted)">{{ post.content|truncatewords:20 }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Inject event types from template side
+const eventTypes = [
+  ['hearts','Weddings','Elegant ceremonies in our Glass Pavilion'],
+  ['balloon','Birthdays','Intimate to grand celebrations'],
+  ['people','Reunions','Reconnect with friends & family'],
+  ['mortarboard','Graduation','Celebrate your achievements'],
+  ['briefcase','Company Events','Team building & seminars'],
+  ['stars','Socials','Special gatherings & parties'],
+];
+// Already rendered server-side via context
+</script>
+{% endblock %}

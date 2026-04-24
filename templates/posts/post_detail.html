@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} — Kakahoyan{% endblock %}
+{% block content %}
+<div style="background:var(--charcoal);padding:3.5rem 0;border-bottom:1px solid var(--gold-dark)">
+  <div class="container">
+    <p class="section-label">Updates</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.5rem);color:#fff;max-width:700px;line-height:1.1">{{ post.title }}</h1>
+    <div class="divider-gold"></div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;letter-spacing:0.08em">{{ post.created_at|date:"F d, Y" }}</p>
+  </div>
+</div>
+<div style="padding:4rem 0;background:var(--cream)">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}"
+             style="width:100%;max-height:460px;object-fit:cover;display:block;border:2px solid var(--gold-dark);margin-bottom:2.5rem">
+        {% endif %}
+        <div style="font-size:0.95rem;line-height:1.9;color:#3D3D3D;white-space:pre-line">{{ post.content }}</div>
+        <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--cream-mid)">
+          <a href="{% url 'posts' %}" style="color:var(--text-muted);font-size:0.85rem;text-decoration:none">
+            <i class="bi bi-arrow-left me-2"></i>Back to Updates
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

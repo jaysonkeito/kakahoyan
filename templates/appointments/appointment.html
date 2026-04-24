@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block title %}Book an Appointment — Kakahoyan{% endblock %}
+
+{% block extra_css %}
+.appt-hero {
+  background: var(--charcoal);
+  padding: 4rem 0;
+  border-bottom: 1px solid rgba(201,168,76,0.3);
+}
+.form-section { padding: 4rem 0; }
+.form-card {
+  background: #fff;
+  border: 1px solid #E8E4DB;
+  padding: 2.5rem;
+}
+.section-badge {
+  background: var(--charcoal);
+  color: var(--gold);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.85rem;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+}
+.field-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #3D3D3D;
+}
+.field-input {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-family: 'Jost', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  background: #fff;
+  color: #1A1A1A;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+}
+.field-select {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 2rem 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-family: 'Jost', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 0.75rem center;
+  color: #1A1A1A;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.field-select:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+}
+.field-textarea {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-family: 'Jost', sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  background: #fff;
+  color: #1A1A1A;
+  resize: vertical;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(201,168,76,0.15);
+}
+.field-hint  { font-size: 0.76rem; color: #888; margin-top: 4px; }
+.field-error { font-size: 0.76rem; color: #dc3545; margin-top: 4px; }
+#address-group { display: none; }
+.btn-submit {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background: var(--gold);
+  color: var(--charcoal);
+  border: none;
+  font-size: 0.85rem;
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-submit:hover { background: #E8C97A; }
+{% endblock %}
+
+{% block content %}
+<div class="appt-hero">
+  <div class="container">
+    <p class="section-label">Consultation</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:3rem;color:#fff;margin-bottom:0.5rem">Set an Appointment</h1>
+    <div style="width:48px;height:1px;background:var(--gold);margin:1rem 0"></div>
+    <p style="color:rgba(255,255,255,0.65);max-width:520px;font-size:0.95rem;line-height:1.7">
+      Tell us about your event and we'll arrange a meeting at your convenience — at Kakahoyan, your preferred location between Sta. Catalina and Bayawan City, or by phone call.
+    </p>
+  </div>
+</div>
+
+<section class="form-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <form method="POST" class="form-card">
+          {% csrf_token %}
+
+          <!-- SECTION 1 -->
+          <div class="section-badge">1 — Your Information</div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="field-label">Full Name *</label>
+              <input type="text" name="client_name" class="field-input" placeholder="Your full name" required
+                value="{{ form.client_name.value|default:'' }}">
+              {% if form.client_name.errors %}<div class="field-error">{{ form.client_name.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="field-label">Phone Number *</label>
+              <input type="text" name="client_phone" class="field-input" placeholder="09XX XXX XXXX" required
+                value="{{ form.client_phone.value|default:'' }}">
+              {% if form.client_phone.errors %}<div class="field-error">{{ form.client_phone.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="col-12">
+              <label class="field-label">Email Address *</label>
+              <input type="email" name="client_email" class="field-input" placeholder="your@email.com" required
+                value="{{ form.client_email.value|default:'' }}">
+              {% if form.client_email.errors %}<div class="field-error">{{ form.client_email.errors|join:", " }}</div>{% endif %}
+            </div>
+          </div>
+
+          <!-- SECTION 2 -->
+          <div class="section-badge">2 — Event Details</div>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="field-label">Event Type *</label>
+              <select name="event_type" class="field-select" required>
+                <option value="">— Select event type —</option>
+                {% for value, label in form.fields.event_type.choices %}
+                  {% if value %}<option value="{{ value }}" {% if form.event_type.value == value %}selected{% endif %}>{{ label }}</option>{% endif %}
+                {% endfor %}
+              </select>
+              {% if form.event_type.errors %}<div class="field-error">{{ form.event_type.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="field-label">Estimated Event Date</label>
+              <input type="date" name="event_date" class="field-input"
+                value="{{ form.event_date.value|default:'' }}">
+            </div>
+            <div class="col-md-6">
+              <label class="field-label">Expected Number of Guests</label>
+              <input type="number" name="expected_guests" class="field-input" placeholder="e.g. 80" min="1"
+                value="{{ form.expected_guests.value|default:'' }}">
+            </div>
+            <div class="col-12">
+              <label class="field-label">Additional Notes</label>
+              <textarea name="notes" class="field-textarea" rows="3"
+                placeholder="Any additional details or questions...">{{ form.notes.value|default:'' }}</textarea>
+            </div>
+          </div>
+
+          <!-- SECTION 3 -->
+          <div class="section-badge">3 — Discussion Preferences</div>
+          <div class="row g-3 mb-4">
+            <div class="col-12">
+              <label class="field-label">How would you like to meet? *</label>
+              <select name="discussion_type" class="field-select" id="discussion_type" required>
+                <option value="">— Select meeting type —</option>
+                {% for value, label in form.fields.discussion_type.choices %}
+                  {% if value %}<option value="{{ value }}" {% if form.discussion_type.value == value %}selected{% endif %}>{{ label }}</option>{% endif %}
+                {% endfor %}
+              </select>
+              <div class="field-hint">We follow your preference — at Kakahoyan, your location (Sta. Catalina to Bayawan City), or by call.</div>
+              {% if form.discussion_type.errors %}<div class="field-error">{{ form.discussion_type.errors|join:", " }}</div>{% endif %}
+            </div>
+
+            <div class="col-12" id="address-group">
+              <label class="field-label">Your Preferred Meeting Address *</label>
+              <input type="text" name="client_address" class="field-input"
+                placeholder="e.g. Brgy. XX, Bayawan City"
+                value="{{ form.client_address.value|default:'' }}">
+              <div class="field-hint">Between Sta. Catalina and Bayawan City only.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="field-label">Preferred Discussion Date *</label>
+              <input type="date" name="discussion_date" class="field-input" required
+                value="{{ form.discussion_date.value|default:'' }}">
+              {% if form.discussion_date.errors %}<div class="field-error">{{ form.discussion_date.errors|join:", " }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="field-label">Preferred Time *</label>
+              <input type="time" name="discussion_time" class="field-input" required
+                value="{{ form.discussion_time.value|default:'' }}">
+              {% if form.discussion_time.errors %}<div class="field-error">{{ form.discussion_time.errors|join:", " }}</div>{% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <i class="bi bi-calendar-check me-2"></i>Submit Appointment Request
+          </button>
+          <p style="font-size:0.78rem;color:#888;text-align:center;margin-top:1rem">
+            We will confirm your appointment via phone or email within 24 hours.
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const discussionType = document.getElementById('discussion_type');
+const addressGroup   = document.getElementById('address-group');
+function toggleAddress() {
+  addressGroup.style.display = discussionType.value === 'client_address' ? 'block' : 'none';
+}
+discussionType.addEventListener('change', toggleAddress);
+toggleAddress();
+</script>
+{% endblock %}

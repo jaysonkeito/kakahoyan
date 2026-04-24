@@ -1,0 +1,103 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Appointment — {{ appt.client_name }}{% endblock %}
+{% block nav_appt %}active{% endblock %}
+{% block page_title %}Appointment Detail{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="stat-card mb-3">
+      <h6 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #E8E4DB">Client Information</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Full Name</div>
+          <div style="font-weight:500">{{ appt.client_name }}</div>
+        </div>
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Phone</div>
+          <div><a href="tel:{{ appt.client_phone }}" style="color:#C9A84C">{{ appt.client_phone }}</a></div>
+        </div>
+        <div class="col-12">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Email</div>
+          <div><a href="mailto:{{ appt.client_email }}" style="color:#C9A84C">{{ appt.client_email }}</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card mb-3">
+      <h6 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #E8E4DB">Event Details</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Event Type</div>
+          <div>{{ appt.get_event_type_display }}</div>
+        </div>
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Event Date</div>
+          <div>{{ appt.event_date|date:"F d, Y"|default:"Not specified" }}</div>
+        </div>
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Expected Guests</div>
+          <div>{{ appt.estimated_guests|default:"Not specified" }}</div>
+        </div>
+        <div class="col-12">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Notes from Client</div>
+          <div style="font-size:0.88rem;color:#3D3D3D">{{ appt.notes|default:"—" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <h6 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #E8E4DB">Discussion Preferences</h6>
+      <div class="row g-2">
+        <div class="col-md-6">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Meeting Type</div>
+          <div>{{ appt.get_discussion_type_display }}</div>
+        </div>
+        <div class="col-md-3">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Date</div>
+          <div>{{ appt.discussion_date|date:"M d, Y" }}</div>
+        </div>
+        <div class="col-md-3">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Time</div>
+          <div>{{ appt.discussion_time|time:"g:i A" }}</div>
+        </div>
+        {% if appt.client_address %}
+        <div class="col-12">
+          <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:#7A7060">Client Address</div>
+          <div>{{ appt.client_address }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="stat-card">
+      <h6 style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid #E8E4DB">Update Status</h6>
+      <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label" style="font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;font-weight:500">Status</label>
+          <select name="status" class="form-select" style="border-radius:0">
+            {% for val, label in appt.STATUS_CHOICES %}
+            <option value="{{ val }}" {% if appt.status == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-size:0.78rem;letter-spacing:0.06em;text-transform:uppercase;font-weight:500">Admin Notes</label>
+          <textarea name="admin_notes" class="form-control" style="border-radius:0;font-size:0.85rem" rows="4">{{ appt.admin_notes }}</textarea>
+        </div>
+        <button type="submit" class="btn-gold btn w-100">Save Changes</button>
+      </form>
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid #E8E4DB;font-size:0.78rem;color:#7A7060">
+        <p class="mb-1">Submitted: {{ appt.created_at|date:"F d, Y g:i A" }}</p>
+        <p class="mb-0">Last updated: {{ appt.updated_at|date:"F d, Y g:i A" }}</p>
+      </div>
+    </div>
+    <div class="mt-3">
+      <a href="{% url 'admin_panel:appointments_list' %}" style="font-size:0.82rem;color:#7A7060"><i class="bi bi-arrow-left me-1"></i>Back to Appointments</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Kakahoyan — Exclusive Event Venue{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dark: #8B6B2A;
+      --charcoal: #1A1A1A;
+      --charcoal-soft: #2C2C2C;
+      --cream: #F9F6F0;
+      --cream-dark: #EDE8DF;
+      --text-muted: #888;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--charcoal); }
+    h1,h2,h3,h4,h5 { font-family: 'Cormorant Garamond', serif; }
+
+    /* Navbar */
+    .navbar-kakahoyan {
+      background: rgba(26,26,26,0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(201,168,76,0.2);
+      padding: 1rem 0;
+      position: sticky; top: 0; z-index: 1000;
+    }
+    .navbar-brand-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gold) !important;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .nav-link-custom {
+      color: rgba(255,255,255,0.8) !important;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 400;
+      transition: color 0.2s;
+      padding: 0.4rem 1rem !important;
+      text-decoration: none !important;
+    }
+    .nav-link-custom:hover, .nav-link-custom.active { color: var(--gold) !important; }
+    .btn-book {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.2rem;
+      transition: all 0.25s;
+      border-radius: 0;
+      text-decoration: none !important;
+    }
+    .btn-book:hover { background: var(--gold); color: var(--charcoal) !important; }
+
+    /* Gold divider */
+    .gold-line { width: 60px; height: 1px; background: var(--gold); margin: 1rem auto; }
+    .gold-line-left { margin: 1rem 0; }
+
+    /* Section label */
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-family: 'Jost', sans-serif;
+    }
+
+    /* Footer */
+    footer {
+      background: var(--charcoal);
+      color: rgba(255,255,255,0.7);
+      padding: 3rem 0 1.5rem;
+    }
+    footer h5 { font-family: 'Cormorant Garamond', serif; color: var(--gold); font-size: 1.2rem; }
+    footer a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; }
+    footer a:hover { color: var(--gold); }
+    .footer-divider { border-color: rgba(201,168,76,0.2); }
+
+    /* Chatbot */
+    #chatbot-bubble {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+    }
+    #chatbot-toggle {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold); border: none;
+      color: var(--charcoal); font-size: 1.4rem;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+      cursor: pointer; transition: transform 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #chatbot-toggle:hover { transform: scale(1.08); }
+    #chatbot-window {
+      display: none; position: absolute;
+      bottom: 68px; right: 0;
+      width: 340px; background: #fff;
+      border: 1px solid var(--cream-dark);
+      border-radius: 12px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+    #chatbot-window.open { display: flex; flex-direction: column; }
+    .chat-header {
+      background: var(--charcoal);
+      color: var(--gold);
+      padding: 0.9rem 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .chat-messages {
+      flex: 1; max-height: 320px; overflow-y: auto;
+      padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .msg-bubble {
+      padding: 0.55rem 0.85rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      max-width: 85%;
+      line-height: 1.5;
+    }
+    .msg-user { background: var(--gold); color: var(--charcoal); align-self: flex-end; border-radius: 12px 12px 2px 12px; }
+    .msg-bot { background: var(--cream); color: var(--charcoal); align-self: flex-start; border-radius: 12px 12px 12px 2px; }
+    .chat-input-row {
+      display: flex; border-top: 1px solid var(--cream-dark);
+      padding: 0.6rem;
+    }
+    .chat-input-row input {
+      flex: 1; border: none; outline: none;
+      font-size: 0.85rem; background: transparent; padding: 0.3rem 0.5rem;
+    }
+    .chat-send-btn {
+      background: var(--gold); border: none; color: var(--charcoal);
+      padding: 0.3rem 0.8rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;
+    }
+
+    {% block extra_css %}{% endblock %}
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-kakahoyan navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand navbar-brand-text" href="/">Kakahoyan</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span style="color:var(--gold); font-size:1.4rem;">&#9776;</span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-1">
+        <li class="nav-item"><a class="nav-link-custom  {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link-custom {% if request.resolver_match.url_name == 'gallery' %}active{% endif %}" href="/gallery/">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link-custom {% if request.resolver_match.url_name == 'packages' %}active{% endif %}" href="/packages/">Packages</a></li>
+        <li class="nav-item"><a class="nav-link-custom {% if request.resolver_match.url_name == 'posts' %}active{% endif %}" href="/posts/">Updates</a></li>
+        <li class="nav-item"><a class="nav-link-custom {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="/contact/">Contact</a></li>
+        <li class="nav-item ms-2"><a class="btn-book" href="/appointments/">Book a Meeting</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+{% if messages %}
+<div class="container mt-3">
+  {% for message in messages %}
+  <div class="alert alert-success alert-dismissible fade show border-0" style="background: #f0f8e8; color: #3a6b1a;" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% block content %}{% endblock %}
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5 class="mb-3">Kakahoyan</h5>
+        <p style="font-size:0.85rem; line-height:1.8;">An exclusive venue for events, weddings, seminars, team building, gatherings, parties, and socials in Sta. Catalina, Negros Oriental.</p>
+      </div>
+      <div class="col-md-3">
+        <h5 class="mb-3">Quick Links</h5>
+        <ul class="list-unstyled" style="font-size:0.85rem; line-height:2.2;">
+          <li><a href="/gallery/">Gallery</a></li>
+          <li><a href="/packages/">Packages</a></li>
+          <li><a href="/appointments/">Book a Meeting</a></li>
+          <li><a href="/contact/">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="col-md-5">
+        <h5 class="mb-3">Contact</h5>
+        <ul class="list-unstyled" style="font-size:0.85rem; line-height:2.2;">
+          <li><i class="bi bi-telephone me-2" style="color:var(--gold)"></i>0920 611 2718</li>
+          <li><i class="bi bi-geo-alt me-2" style="color:var(--gold)"></i>Purok 2, Brgy. Caranoche, Sta. Catalina, Negros Oriental, 6220</li>
+          <li><i class="bi bi-facebook me-2" style="color:var(--gold)"></i><a href="https://www.facebook.com/share/1Chp6StDQK/" target="_blank">Kakahoyan on Facebook</a></li>
+          <li><i class="bi bi-clock me-2" style="color:var(--gold)"></i>Always open (by appointment)</li>
+        </ul>
+      </div>
+    </div>
+    <hr class="footer-divider mt-4 mb-3"/>
+    <p class="text-center mb-0" style="font-size:0.75rem; color:rgba(255,255,255,0.4);">
+  &copy; 2025 Kakahoyan Event Venue. All rights reserved.
+</p>
+<div class="text-center mt-2" style="font-size:0.7rem; color:rgba(255,255,255,0.25); border-top: 1px solid rgba(201,168,76,0.1); padding-top: 0.75rem;">
+  <span style="letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Development Team</span><br/>
+  <span style="margin-top:0.3rem; display:inline-block; line-height:2;">
+    Dawn Espinosa <span style="color:rgba(255,255,255,0.15);">· Project Manager</span> &nbsp;
+    Janbe Baya <span style="color:rgba(255,255,255,0.15);">· Project Analyst</span> &nbsp;
+    Bert Nichole Estrella <span style="color:rgba(255,255,255,0.15);">· Frontend / UI</span> &nbsp;
+    Jayson Francisco <span style="color:rgba(255,255,255,0.15);">· Backend</span> &nbsp;
+    John Ryan Teope <span style="color:rgba(255,255,255,0.15);">· QA</span>
+  </span>
+</div>
+  </div>
+</footer>
+
+<!-- Chatbot bubble -->
+<div id="chatbot-bubble">
+  <div id="chatbot-window">
+    <div class="chat-header">
+      <i class="bi bi-chat-dots-fill"></i> Kaka — Virtual Assistant
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg-bubble msg-bot">Hi! I'm Kaka 👋 Ask me anything about Kakahoyan — our venue, capacity, events, or how to book a meeting!</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Type your question…" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="chat-send-btn" onclick="sendChat()"><i class="bi bi-send-fill"></i></button>
+    </div>
+  </div>
+  <button id="chatbot-toggle" onclick="toggleChat()">
+    <i class="bi bi-chat-dots-fill" id="chat-icon"></i>
+  </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function toggleChat() {
+  const w = document.getElementById('chatbot-window');
+  w.classList.toggle('open');
+  document.getElementById('chat-icon').className = w.classList.contains('open') ? 'bi bi-x-lg' : 'bi bi-chat-dots-fill';
+}
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+  appendMsg(msg, 'user');
+  const typing = appendMsg('…', 'bot');
+  try {
+    const res = await fetch('/chatbot/message/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken')},
+      body: JSON.stringify({message: msg})
+    });
+    const data = await res.json();
+    typing.textContent = data.reply || 'Sorry, something went wrong.';
+  } catch(e) {
+    typing.textContent = 'Connection error. Please try again.';
+  }
+}
+function appendMsg(text, role) {
+  const box = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg-bubble msg-${role === 'user' ? 'user' : 'bot'}`;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+function getCookie(name) {
+  const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
+}
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Contact Us — Kakahoyan{% endblock %}
+{% block content %}
+<div style="background:var(--charcoal);padding:4rem 0;border-bottom:1px solid var(--gold-dark)">
+  <div class="container">
+    <p class="section-label">Get in Touch</p>
+    <h1 style="font-family:'Cormorant Garamond',serif;font-size:3rem;color:#fff">Contact Us</h1>
+    <div class="divider-gold"></div>
+    <p style="color:rgba(255,255,255,0.65)">We'd love to hear from you.</p>
+  </div>
+</div>
+<section style="padding:5rem 0;background:var(--cream)">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5">
+        <p class="section-label">Reach Us</p>
+        <h2 class="section-title">Contact Information</h2>
+        <div class="divider-gold"></div>
+        <div style="display:flex;flex-direction:column;gap:1.25rem;margin-top:1.5rem">
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <i class="bi bi-telephone" style="color:var(--gold);font-size:1.1rem;margin-top:2px"></i>
+            <div>
+              <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:2px">Phone</div>
+              <a href="tel:09206112718" style="color:var(--charcoal);font-size:1rem;font-weight:500">0920 611 2718</a>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <i class="bi bi-geo-alt" style="color:var(--gold);font-size:1.1rem;margin-top:2px"></i>
+            <div>
+              <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:2px">Address</div>
+              <div style="font-size:0.9rem;line-height:1.6">Purok 2, Brgy. Caranoche,<br>Sta. Catalina, Negros Oriental, 6220</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <i class="bi bi-clock" style="color:var(--gold);font-size:1.1rem;margin-top:2px"></i>
+            <div>
+              <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:2px">Hours</div>
+              <div style="font-size:0.9rem">Always open for inquiries</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <i class="bi bi-facebook" style="color:var(--gold);font-size:1.1rem;margin-top:2px"></i>
+            <div>
+              <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-muted);margin-bottom:2px">Facebook</div>
+              <a href="https://www.facebook.com/Kakahoyan" target="_blank" style="color:var(--gold)">@Kakahoyan</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div style="background:#fff;border:1px solid var(--cream-mid);padding:2.5rem">
+          <p class="section-label">Send a Message</p>
+          {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-success" style="border-radius:0;font-size:0.85rem;border-left:3px solid var(--gold)">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+          <form method="POST">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:500">Full Name *</label>
+                <input type="text" name="name" class="form-control" style="border-radius:0;margin-top:4px" required>
+              </div>
+              <div class="col-md-6">
+                <label style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:500">Phone</label>
+                <input type="text" name="phone" class="form-control" style="border-radius:0;margin-top:4px">
+              </div>
+              <div class="col-12">
+                <label style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:500">Email *</label>
+                <input type="email" name="email" class="form-control" style="border-radius:0;margin-top:4px" required>
+              </div>
+              <div class="col-12">
+                <label style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:500">Subject *</label>
+                <input type="text" name="subject" class="form-control" style="border-radius:0;margin-top:4px" required>
+              </div>
+              <div class="col-12">
+                <label style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:500">Message *</label>
+                <textarea name="message" class="form-control" style="border-radius:0;margin-top:4px" rows="5" required></textarea>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="btn-primary-gold w-100" style="padding:0.85rem">Send Message</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

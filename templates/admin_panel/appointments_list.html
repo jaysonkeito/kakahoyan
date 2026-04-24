@@ -1,0 +1,55 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Appointments — Kakahoyan Admin{% endblock %}
+{% block nav_appt %}active{% endblock %}
+{% block page_title %}Appointments{% endblock %}
+
+{% block content %}
+<div class="d-flex gap-2 flex-wrap mb-3">
+  {% for val, label in appt_statuses %}
+  <a href="?status={{ val }}" class="btn btn-sm {% if status_filter == val %}btn-dark{% else %}btn-outline-secondary{% endif %}" style="border-radius:0;font-size:0.78rem;letter-spacing:0.05em">
+    {{ label }}
+  </a>
+  {% endfor %}
+  <a href="?" class="btn btn-sm {% if not status_filter %}btn-dark{% else %}btn-outline-secondary{% endif %}" style="border-radius:0;font-size:0.78rem">All</a>
+</div>
+
+<div class="stat-card">
+  <table class="table table-hover mb-0">
+    <thead>
+      <tr>
+        <th>Client</th><th>Event Type</th><th>Discussion</th><th>Location</th><th>Status</th><th>Submitted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appt in appointments %}
+      <tr style="cursor:pointer" onclick="location.href='{% url 'admin_panel:appointment_detail' appt.pk %}'">
+        <td>
+          <div style="font-weight:500;font-size:0.88rem">{{ appt.client_name }}</div>
+          <div style="font-size:0.75rem;color:#7A7060">{{ appt.client_phone }}</div>
+          <div style="font-size:0.75rem;color:#7A7060">{{ appt.client_email }}</div>
+        </td>
+        <td style="font-size:0.85rem">{{ appt.get_event_type_display }}</td>
+        <td style="font-size:0.85rem">
+          {{ appt.discussion_date|date:"M d, Y" }}<br>
+          <span style="color:#7A7060;font-size:0.75rem">{{ appt.discussion_time|time:"g:i A" }}</span>
+        </td>
+        <td style="font-size:0.82rem;color:#7A7060">
+          {{ appt.get_discussion_type_display }}
+          {% if appt.client_address %}<br><span style="font-size:0.75rem">{{ appt.client_address }}</span>{% endif %}
+        </td>
+        <td>
+          <span class="badge badge-{{ appt.status }} px-2 py-1" style="font-size:0.72rem;border-radius:2px">
+            {{ appt.get_status_display }}
+          </span>
+        </td>
+        <td style="font-size:0.78rem;color:#7A7060">{{ appt.created_at|date:"M d" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center py-5" style="color:#7A7060;font-size:0.85rem">
+        No appointments found.
+      </td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
