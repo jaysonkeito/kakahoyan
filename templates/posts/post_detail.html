@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
 {% block title %}{{ post.title }} — Kakahoyan{% endblock %}
+
+{% block extra_css %}
+.media-slideshow { position: relative; background: #111; border: 2px solid var(--gold-dark); margin-bottom: 2.5rem; overflow: hidden; }
+.media-slideshow img, .media-slideshow video { width: 100%; max-height: 500px; object-fit: contain; display: none; }
+.media-slideshow img.active, .media-slideshow video.active { display: block; }
+.slide-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(26,26,26,0.7); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; transition: background 0.2s; }
+.slide-nav:hover { background: rgba(201,168,76,0.8); }
+.slide-prev { left: 12px; }
+.slide-next { right: 12px; }
+.slide-counter { position: absolute; bottom: 12px; right: 14px; background: rgba(26,26,26,0.6); color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; }
+.slide-thumb-bar { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.slide-thumb { width: 60px; height: 50px; object-fit: cover; cursor: pointer; border: 2px solid transparent; border-radius: 4px; opacity: 0.6; transition: all 0.2s; }
+.slide-thumb.active { border-color: var(--gold); opacity: 1; }
+{% endblock %}
+
 {% block content %}
 <div style="background:var(--charcoal);padding:3.5rem 0;border-bottom:1px solid var(--gold-dark)">
   <div class="container">
@@ -9,15 +24,52 @@
     <p style="color:rgba(255,255,255,0.5);font-size:0.8rem;letter-spacing:0.08em">{{ post.created_at|date:"F d, Y" }}</p>
   </div>
 </div>
+
 <div style="padding:4rem 0;background:var(--cream)">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        {% if post.image %}
-        <img src="{{ post.image.url }}" alt="{{ post.title }}"
+
+        {% with all_media=post.media_files.all %}
+        {% if all_media %}
+        <!-- MULTI-MEDIA SLIDESHOW -->
+        <div class="media-slideshow" id="postSlideshow">
+          {% for media in all_media %}
+            {% if media.media_type == 'image' %}
+            <img src="{{ media.file.url }}" alt="{{ post.title }}" class="{% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            {% else %}
+            <video src="{{ media.file.url }}" controls class="{% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}"></video>
+            {% endif %}
+          {% endfor %}
+          {% if all_media.count > 1 %}
+          <button class="slide-nav slide-prev" onclick="changeSlide(-1)"><i class="bi bi-chevron-left"></i></button>
+          <button class="slide-nav slide-next" onclick="changeSlide(1)"><i class="bi bi-chevron-right"></i></button>
+          <div class="slide-counter" id="slideCounter">1 / {{ all_media.count }}</div>
+          {% endif %}
+        </div>
+        {% if all_media.count > 1 %}
+        <div class="slide-thumb-bar" id="thumbBar">
+          {% for media in all_media %}
+          {% if media.media_type == 'image' %}
+          <img src="{{ media.file.url }}" class="slide-thumb {% if forloop.first %}active{% endif %}" onclick="goSlide({{ forloop.counter0 }})">
+          {% else %}
+          <div class="slide-thumb {% if forloop.first %}active{% endif %}" onclick="goSlide({{ forloop.counter0 }})"
+               style="background:#1a1a1a;display:flex;align-items:center;justify-content:center;">
+            <i class="bi bi-play-circle" style="color:#C9A84C;font-size:1.2rem;"></i>
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% elif post.cover_image %}
+        <!-- SINGLE COVER IMAGE FALLBACK -->
+        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}"
              style="width:100%;max-height:460px;object-fit:cover;display:block;border:2px solid var(--gold-dark);margin-bottom:2.5rem">
         {% endif %}
-        <div style="font-size:0.95rem;line-height:1.9;color:#3D3D3D;white-space:pre-line">{{ post.content }}</div>
+        {% endwith %}
+
+        <div style="font-size:0.95rem;line-height:1.9;color:#3D3D3D;white-space:pre-line;margin-top:2rem">{{ post.content }}</div>
+
         <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--cream-mid)">
           <a href="{% url 'posts' %}" style="color:var(--text-muted);font-size:0.85rem;text-decoration:none">
             <i class="bi bi-arrow-left me-2"></i>Back to Updates
@@ -27,4 +79,36 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentSlide = 0;
+const slideshow = document.getElementById('postSlideshow');
+const counter   = document.getElementById('slideCounter');
+const thumbBar  = document.getElementById('thumbBar');
+
+function getAllSlides() {
+  return slideshow ? slideshow.querySelectorAll('img, video') : [];
+}
+function getAllThumbs() {
+  return thumbBar ? thumbBar.querySelectorAll('.slide-thumb') : [];
+}
+
+function goSlide(idx) {
+  const slides = getAllSlides();
+  const thumbs = getAllThumbs();
+  if (!slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  if (thumbs[currentSlide]) thumbs[currentSlide].classList.remove('active');
+  currentSlide = (idx + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+  if (thumbs[currentSlide]) thumbs[currentSlide].classList.add('active');
+  if (counter) counter.textContent = (currentSlide + 1) + ' / ' + slides.length;
+}
+
+function changeSlide(dir) {
+  goSlide(currentSlide + dir);
+}
+</script>
 {% endblock %}

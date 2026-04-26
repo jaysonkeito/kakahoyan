@@ -2,18 +2,10 @@
 {% block title %}Event Packages — Kakahoyan{% endblock %}
 {% block content %}
 <style>
-.hero-text {
-  color: rgba(255,255,255,0.65);
-  max-width: 560px;
-}
-
-@media (min-width: 992px) {
-  .hero-text {
-    max-width: none;
-    white-space: nowrap;
-  }
-}
+.hero-text { color: rgba(255,255,255,0.65); max-width: 560px; }
+@media (min-width: 992px) { .hero-text { max-width: none; white-space: nowrap; } }
 </style>
+
 <div style="background:var(--charcoal);padding:2rem 0; border-bottom:1px solid var(--gold-dark)">
   <div class="container">
     <p class="section-label">Services</p>
@@ -22,22 +14,26 @@
     <p class="hero-text">From intimate gatherings to grand celebrations — Kakahoyan has a space for every occasion.</p>
   </div>
 </div>
+
 <section style="padding:5rem 0;background:var(--cream)">
   <div class="container">
     <div class="row g-4">
-      {% for icon, name, detail in packages %}
+      {% for service in services %}
       <div class="col-md-6 col-lg-4">
         <div style="background:#fff;border:1px solid var(--cream-mid);padding:2rem;height:100%;transition:all 0.25s"
              onmouseover="this.style.borderColor='var(--gold)';this.style.transform='translateY(-4px)'"
              onmouseout="this.style.borderColor='var(--cream-mid)';this.style.transform='none'">
-          <i class="{{ icon }}" style="font-size:2rem;color:var(--gold);display:block;margin-bottom:1rem"></i>
-          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:0.5rem">{{ name }}</h3>
+          <i class="bi {{ service.icon }}" style="font-size:2rem;color:var(--gold);display:block;margin-bottom:1rem"></i>
+          <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;margin-bottom:0.5rem">{{ service.name }}</h3>
           <div style="width:32px;height:2px;background:var(--gold);margin-bottom:1rem"></div>
-          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.7">{{ detail }}</p>
+          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.7">{{ service.description }}</p>
         </div>
       </div>
+      {% empty %}
+      <div class="col-12 text-center text-muted py-5">No services available at the moment.</div>
       {% endfor %}
     </div>
+
     <div style="text-align:center;margin-top:4rem;padding:3rem;background:var(--charcoal);border:1px solid var(--gold-dark)">
       <p style="color:var(--gold);font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:0.5rem">Pricing</p>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:2rem;color:#fff;margin-bottom:1rem">Packages are tailored to your needs</h2>

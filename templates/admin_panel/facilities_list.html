@@ -1,0 +1,39 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Facilities — Kakahoyan Admin{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0">Facilities & Amenities</h4>
+  <a href="{% url 'admin_panel:facility_create' %}" class="btn btn-warning btn-sm"><i class="bi bi-plus-lg me-1"></i> Add Facility</a>
+</div>
+<div class="row g-3">
+  {% for f in facilities %}
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h6 class="mb-0">{{ f.name }}</h6>
+            {% if f.is_featured %}<span class="badge" style="background:#C9A84C;color:#1a1a1a;font-size:.7rem;">Featured</span>{% endif %}
+          </div>
+          <div class="d-flex gap-1">
+            <a href="{% url 'admin_panel:facility_edit' f.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <form method="post" action="{% url 'admin_panel:facility_delete' f.pk %}" class="d-inline" onsubmit="return confirm('Delete?')">
+              {% csrf_token %}<button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+        <p class="text-muted mb-2" style="font-size:.85rem;">{{ f.description|truncatechars:100 }}</p>
+        <div class="d-flex flex-wrap gap-1">
+          {% for img in f.images.all %}
+          <img src="{{ img.image.url }}" style="height:55px;width:70px;object-fit:cover;border-radius:5px;">
+          {% endfor %}
+          {% if not f.images.all %}<span class="text-muted" style="font-size:.8rem;">No images yet</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-12 text-center text-muted py-5">No facilities yet. Add one!</div>
+  {% endfor %}
+</div>
+{% endblock %}

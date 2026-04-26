@@ -1,0 +1,49 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{% if member %}Edit Member{% else %}Add Member{% endif %} — Kakahoyan Admin{% endblock %}
+{% block nav_team %}active{% endblock %}
+{% block page_title %}Management Team{% endblock %}
+{% block content %}
+<h4 class="mb-4">{% if member %}Edit Team Member{% else %}Add Team Member{% endif %}</h4>
+<div class="card border-0 shadow-sm" style="max-width:580px;">
+  <div class="card-body p-4">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Full Name</label>
+        <input type="text" name="name" class="form-control" value="{{ member.name|default:'' }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Role / Position</label>
+        <input type="text" name="role" class="form-control" value="{{ member.role|default:'' }}" required placeholder="e.g. General Manager">
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Bio <span class="text-muted fw-normal">(optional)</span></label>
+        <textarea name="bio" class="form-control" rows="3">{{ member.bio|default:'' }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Photo <span class="text-muted fw-normal">(optional)</span></label>
+        {% if member.photo %}
+        <div class="mb-2"><img src="{{ member.photo.url }}" style="height:70px;width:70px;border-radius:50%;object-fit:cover;border:2px solid #C9A84C;"></div>
+        {% endif %}
+        <input type="file" name="photo" class="form-control" accept="image/*">
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Display Order</label>
+          <input type="number" name="order" class="form-control" value="{{ member.order|default:'0' }}" min="0">
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_active" id="active" {% if member.is_active or not member %}checked{% endif %}>
+            <label class="form-check-label" for="active">Active (show on site)</label>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-warning px-4"><i class="bi bi-check-lg me-1"></i> Save</button>
+        <a href="{% url 'admin_panel:team_list' %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

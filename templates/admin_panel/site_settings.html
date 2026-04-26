@@ -1,0 +1,62 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Site Settings — Kakahoyan Admin{% endblock %}
+{% block content %}
+<h4 class="mb-4">Site Settings</h4>
+
+<div class="card border-0 shadow-sm" style="max-width:760px;">
+  <div class="card-body p-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Venue Name</label>
+          <input type="text" name="venue_name" class="form-control" value="{{ site.venue_name }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Phone</label>
+          <input type="text" name="phone" class="form-control" value="{{ site.phone }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Tagline</label>
+          <input type="text" name="tagline" class="form-control" value="{{ site.tagline }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Hero Description</label>
+          <textarea name="hero_description" class="form-control" rows="3">{{ site.hero_description }}</textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Email</label>
+          <input type="email" name="email" class="form-control" value="{{ site.email }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Hours</label>
+          <input type="text" name="hours" class="form-control" value="{{ site.hours }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Address</label>
+          <textarea name="address" class="form-control" rows="2">{{ site.address }}</textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Facebook URL</label>
+          <input type="url" name="facebook_url" class="form-control" value="{{ site.facebook_url }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Indoor Capacity</label>
+          <input type="number" name="max_indoor_capacity" class="form-control" value="{{ site.max_indoor_capacity }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Outdoor Capacity</label>
+          <input type="number" name="max_outdoor_capacity" class="form-control" value="{{ site.max_outdoor_capacity }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Google Maps Embed</label>
+          <textarea name="google_maps_embed" class="form-control" rows="3" placeholder="Paste full iframe code here">{{ site.google_maps_embed }}</textarea>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button type="submit" class="btn btn-warning px-4"><i class="bi bi-check-lg me-1"></i> Save Settings</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
