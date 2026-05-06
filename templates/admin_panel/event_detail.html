@@ -1,0 +1,172 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Event Record — Kakahoyan Admin{% endblock %}
+{% block page_title %}Event Record{% endblock %}
+{% block nav_events %}active{% endblock %}
+
+{% block extra_css %}
+<style>
+  .section-label { font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:#7A7060; margin-bottom:0.75rem; padding-bottom:0.4rem; border-bottom:1px solid #E8E4DB; }
+  .info-pill { background:#F4F2ED; border:1px solid #E8E4DB; padding:0.4rem 0.85rem; font-size:0.82rem; color:var(--charcoal); display:inline-block; }
+  .balance-display { background:#FFF3CD; border:1px solid #FFD60A; padding:0.75rem 1rem; font-size:0.85rem; }
+  .balance-display.paid { background:#D1E7DD; border-color:#0A4D2E; }
+  .form-label { font-size:0.8rem; letter-spacing:0.04em; color:#7A7060; margin-bottom:0.3rem; }
+  .form-control, .form-select { border-radius:0; font-size:0.85rem; border-color:#E8E4DB; }
+  .form-control:focus, .form-select:focus { border-color:var(--gold); box-shadow:0 0 0 2px rgba(201,168,76,0.15); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-xl-9">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="{% url 'admin_panel:events_list' %}" class="btn btn-sm" style="border:1px solid #E8E4DB;border-radius:0;font-size:0.78rem">
+        <i class="bi bi-arrow-left me-1"></i> Back to Events
+      </a>
+      {% if event.reminder_sent_at %}
+      <span style="font-size:0.72rem;color:#7A7060"><i class="bi bi-envelope-check me-1"></i>Last reminder sent: {{ event.reminder_sent_at|date:"M d, Y H:i" }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Header Card -->
+    <div class="mb-4 p-3" style="background:#fff;border:1px solid #E8E4DB;border-left:4px solid {% if event.is_fully_paid %}#0A4D2E{% else %}var(--gold){% endif %}">
+      <div class="d-flex flex-wrap gap-2 align-items-center">
+        <span class="info-pill"><i class="bi bi-person me-1"></i>{{ event.client_name }}</span>
+        <span class="info-pill"><i class="bi bi-stars me-1"></i>{{ event.event_type }}</span>
+        <span class="info-pill"><i class="bi bi-calendar me-1"></i>{{ event.scheduled_date }}</span>
+        {% if event.is_fully_paid %}
+        <span class="badge" style="background:#D1E7DD;color:#0A4D2E;border-radius:0;font-size:0.72rem">Fully Paid</span>
+        {% else %}
+        <span class="badge" style="background:#FFF3CD;color:#856404;border-radius:0;font-size:0.72rem">Balance Remaining</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div style="background:#fff;border:1px solid #E8E4DB;padding:1.5rem 2rem">
+
+        <!-- Client Info -->
+        <div class="section-label mb-3">Client Information</div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" value="{{ event.client_name }}" readonly style="background:#F4F2ED">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" value="{{ event.client_email }}" readonly style="background:#F4F2ED">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" value="{{ event.client_phone }}" readonly style="background:#F4F2ED">
+          </div>
+        </div>
+
+        <!-- Event Details -->
+        <div class="section-label mb-3">Event Details</div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label">Scheduled Date</label>
+            <input type="date" name="scheduled_date" class="form-control" value="{{ event.scheduled_date }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">No. of Guests</label>
+            <input type="number" name="no_of_guests" class="form-control" value="{{ event.no_of_guests }}" min="0">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Amenities</label>
+            <textarea name="amenities" class="form-control" rows="3">{{ event.amenities }}</textarea>
+            {% if amenities_list %}
+            <div class="mt-2 d-flex flex-wrap gap-1">
+              {% for a in amenities_list %}
+              <button type="button" class="btn btn-sm" style="background:#F4F2ED;border:1px solid #E8E4DB;font-size:0.72rem;border-radius:0"
+                onclick="appendAmenity('{{ a.name }}')">+ {{ a.name }}</button>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-12">
+            <label class="form-label">Special Request</label>
+            <textarea name="special_request" class="form-control" rows="2">{{ event.special_request }}</textarea>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="section-label mb-3">Payment</div>
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Payment Type</label>
+            <select name="payment_type" class="form-select" id="paymentType" onchange="updateBalance()">
+              <option value="down_payment" {% if event.payment_type == 'down_payment' %}selected{% endif %}>Down Payment</option>
+              <option value="fully_paid" {% if event.payment_type == 'fully_paid' %}selected{% endif %}>Fully Paid</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Total Amount (₱)</label>
+            <input type="number" name="total_amount" class="form-control" id="totalAmount" value="{{ event.total_amount }}" min="0" step="0.01" oninput="updateBalance()">
+          </div>
+          <div class="col-md-4" id="amountPaidWrapper">
+            <label class="form-label">Amount Paid (₱)</label>
+            <input type="number" name="amount_paid" class="form-control" id="amountPaid" value="{{ event.amount_paid }}" min="0" step="0.01" oninput="updateBalance()">
+          </div>
+        </div>
+
+        <div class="balance-display mb-4" id="balanceDisplay">
+          <span id="balanceText"></span>
+          <div style="font-size:0.72rem;margin-top:4px" id="reminderNote"></div>
+        </div>
+
+        <button type="submit" class="btn btn-gold px-4">
+          <i class="bi bi-check-lg me-1"></i> Update Event Record
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function appendAmenity(name) {
+    const ta = document.querySelector('textarea[name="amenities"]');
+    ta.value = ta.value ? ta.value + ', ' + name : name;
+  }
+
+  function updateBalance() {
+    const type = document.getElementById('paymentType').value;
+    const total = parseFloat(document.getElementById('totalAmount').value) || 0;
+    const paidEl = document.getElementById('amountPaid');
+    const display = document.getElementById('balanceDisplay');
+    const text = document.getElementById('balanceText');
+    const note = document.getElementById('reminderNote');
+
+    if (type === 'fully_paid') {
+      document.getElementById('amountPaidWrapper').style.opacity = '0.5';
+      paidEl.value = total;
+      paidEl.readOnly = true;
+    } else {
+      document.getElementById('amountPaidWrapper').style.opacity = '1';
+      paidEl.readOnly = false;
+    }
+
+    const paid = parseFloat(paidEl.value) || 0;
+    const remaining = total - paid;
+
+    if (type === 'fully_paid' || remaining <= 0) {
+      display.className = 'balance-display paid mb-4';
+      text.textContent = 'Fully Paid — ₱' + total.toLocaleString('en-PH', {minimumFractionDigits:2});
+      note.textContent = '';
+      note.style.color = '';
+    } else {
+      display.className = 'balance-display mb-4';
+      text.textContent = 'Remaining Balance: ₱' + remaining.toLocaleString('en-PH', {minimumFractionDigits:2}) + ' (Paid: ₱' + paid.toLocaleString('en-PH', {minimumFractionDigits:2}) + ' of ₱' + total.toLocaleString('en-PH', {minimumFractionDigits:2}) + ')';
+      note.textContent = '⚠ Saving will send a payment reminder email to the client.';
+      note.style.color = '#856404';
+    }
+  }
+
+  // Init on load
+  updateBalance();
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}{% if facility %}Edit Amenity{% else %}Add Amenity{% endif %} — Kakahoyan Admin{% endblock %}
+{% block content %}
+<h4 class="mb-4">{% if facility %}Edit Amenity{% else %}Add Amenity{% endif %}</h4>
+<div class="card border-0 shadow-sm" style="max-width:680px;">
+  <div class="card-body p-4">
+    <form method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Amenity Name</label>
+        <input type="text" name="name" class="form-control" value="{{ facility.name|default:'' }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Description</label>
+        <textarea name="description" class="form-control" rows="3">{{ facility.description|default:'' }}</textarea>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold text-uppercase" style="font-size:.75rem;letter-spacing:.1em;">Order</label>
+          <input type="number" name="order" class="form-control" value="{{ facility.order|default:'0' }}" min="0">
+        </div>
+        <div class="col-md-6 d-flex align-items-end">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="is_featured" id="feat" {% if facility.is_featured %}checked{% endif %}>
+            <label class="form-check-label" for="feat">Featured (highlighted on site)</label>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-warning px-4"><i class="bi bi-check-lg me-1"></i> Save</button>
+        <a href="{% url 'admin_panel:amenities_list' %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
