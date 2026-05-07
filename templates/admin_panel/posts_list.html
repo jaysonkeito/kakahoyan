@@ -1,0 +1,61 @@
+{% extends 'admin_panel/base.html' %}
+{% block title %}Posts — Kakahoyan Admin{% endblock %}
+{% block nav_posts %}active{% endblock %}
+{% block page_title %}Posts{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div style="font-size:0.85rem;color:#7A7060">{{ posts.count }} post(s)</div>
+  <a href="{% url 'admin_panel:post_create' %}" class="btn-gold btn"><i class="bi bi-plus-lg me-2"></i>New Post</a>
+</div>
+
+<div class="stat-card">
+  <table class="table table-hover mb-0">
+    <thead>
+      <tr><th>Title</th><th>Published</th><th>Featured</th><th>Date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td>
+          <div style="font-weight:500;font-size:0.88rem">{{ post.title|default:"(No title)" }}</div>
+          <div style="font-size:0.75rem;color:#7A7060">{{ post.content|truncatewords:12 }}</div>
+        </td>
+        <td>
+          {% if post.is_published %}
+            <span style="color:#0A4D2E;font-size:0.78rem">● Published</span>
+          {% else %}
+            <span style="color:#7A7060;font-size:0.78rem">○ Draft</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if post.is_featured %}
+            <span style="color:#C9A84C;font-size:0.78rem">★ Featured</span>
+          {% else %}
+            <span style="color:#ccc;font-size:0.78rem">—</span>
+          {% endif %}
+        </td>
+        <td style="font-size:0.78rem;color:#7A7060">{{ post.created_at|date:"M d, Y" }}</td>
+        <td>
+          <div class="d-flex gap-1">
+            <a href="{% url 'admin_panel:post_edit' post.pk %}" class="btn btn-sm btn-outline-secondary" style="border-radius:0;font-size:0.72rem;padding:2px 8px">
+              <i class="bi bi-pencil"></i>
+            </a>
+            <form method="POST" action="{% url 'admin_panel:post_delete' post.pk %}" onsubmit="return confirm('Delete this post?')">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger" style="border-radius:0;font-size:0.72rem;padding:2px 8px">
+                <i class="bi bi-trash"></i>
+              </button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-center py-5" style="color:#7A7060;font-size:0.85rem">
+        No posts yet. <a href="{% url 'admin_panel:post_create' %}" style="color:#C9A84C">Create your first post.</a>
+      </td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
